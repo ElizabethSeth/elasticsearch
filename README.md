@@ -1,65 +1,42 @@
-🎬 Projet d’Ingestion & Visualisation de Données de Films
+🎬 Projet Elasticsearch : Ingestion & Visualisation de Films
+👨‍🎓 Présentation
 
-Stack Elastic : Elasticsearch • Logstash • Kibana
+Ce projet a été réalisé dans le cadre du module Big Data & Elastic Stack.
+L’objectif était de mettre en place un pipeline complet pour :
 
-📌 Objectif du Projet
+✅ Ingérer des données de films
+✅ Les transformer et filtrer automatiquement
+✅ Les indexer dans Elasticsearch
+✅ Construire un dashboard interactif dans Kibana
 
-Créer un pipeline complet de traitement des données cinématographiques permettant :
+🛠️ Stack Technique
+Technologie	Rôle
+Logstash	Pipeline ETL : lecture → transformation → envoi
+Elasticsearch	Moteur de recherche et stockage
+Kibana	Visualisation et analyse de données
+📂 1️⃣ Logstash — Ingestion & Transformations
+✅ Fichier de configuration utilisé : movies_pipeline.conf
 
-✅ Lecture d’un flux de films
-✅ Nettoyage & enrichissement des données
-✅ Indexation automatique dans Elasticsearch
-✅ Construction de visualisations d’analyse dans Kibana
+🔹 Logstash lit un fichier NDJSON : chaque ligne = un film
+🔹 Transformations appliquées :
 
-📊 Ce projet permet de mieux comprendre les genres, réalisateurs et tendances du cinéma.
+Transformation	Exemple	Objectif
+Conversion des types	rating → float, year → integer	Cohérence des données
+Extraction de la décennie	2013 → 2010s	Faciliter l’analyse par période
+Conversion durée	running_time_secs → duration_min	Lecture humaine
+Enrichissement	director_name = directors[0]	Regroupements plus simples
+Filtrage qualité	films avec rating < 5 supprimés	Conserver les meilleurs films
 
-🛠️ Architecture
-flowchart LR
-  A[movies.json] -->|Clean + Transform| B(Logstash)
-  B -->|Indexation| C[Elasticsearch]
-  C -->|Visualisation| D[Kibana Dashboard]
+🧠 Résultat : un dataset propre, enrichi et exploitable.
 
-🔧 1️⃣ Logstash — Pipeline d’Ingestion
+🗂️ 2️⃣ Indexation Elasticsearch
 
-📄 Fichier : movies_pipeline.conf
-
-✅ Transformations appliquées
-Transformation	Description	Objectif
-🔄 Conversion de types	rating → float, year → int	structuration des données
-🕙 Création champ decade	Ex : 2013 → 2010s	analyse temporelle
-⏱ Conversion durée	running_time_secs → duration_min	lisibilité
-🎬 Normalisation réalisateur	Ajout director_name	regroupements plus précis
-🚫 Filtrage qualité	Suppression films avec rating < 5	dataset pertinent
-
-📌 Résultat → Dataset propre, enrichi & exploitable ✅
-
-📦 2️⃣ Indexation Elasticsearch
-
-Index créé automatiquement :
+✅ Index créé automatiquement :
 
 movies-%{+YYYY.MM.dd}
 
 
-Vérification :
+📌 Vérification en CLI :
 
 curl -k -u "elastic:<PW>" "https://localhost:9200/_cat/indices/movies-*?v"
 curl -k -u "elastic:<PW>" "https://localhost:9200/movies-*/_count?pretty"
-
-
-📌 Exemple d’état obtenu :
-
-Champ	Valeur
-Nombre de films	≈ 4850
-Espace total	≈ 4 Mo
-
-🎯 Seuls les films bien notés sont indexés → signal positif 💡
-
-📊 3️⃣ Dashboard Kibana — Visualisations
-
-Le tableau de bord inclut 4 visualisations pertinentes ✅
-
-Visualisation	Description	Insight
-📈 Bar chart — Movies Count by Genre	Top genres par nombre de films	La majorité : Drama & Comedy
-🍩 Donut — Best Directors (avg rating)	Top réalisateurs les mieux notés	Chaplin & Kurosawa brillent ⭐
-🧱 Treemap — Répartition des réalisateurs par genre	Qui réalise quoi ?	Bonne diversité selon les genres
-🎭 Stacked Bar — Genres par acteur	Acteurs multi-genres	Robert De Niro & Bruce Willis dominent
