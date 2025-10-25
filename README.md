@@ -35,6 +35,9 @@ Filtrage qualité	films avec rating < 5 supprimés	Conserver les meilleurs films
 
 movies-%{+YYYY.MM.dd}
 
+<img width="1310" height="641" alt="image" src="https://github.com/user-attachments/assets/57e30f8d-6ab9-4fd3-9dd9-f5d8238e650e" />
+
+
 
 📌 Vérification en CLI :
 
